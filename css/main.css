@@ -1,0 +1,333 @@
+@font-face {
+	font-family: "Ubuntu";
+	src: url("../fonts/ubuntu-regular.ttf");
+}
+body {
+	background-color: white;
+}
+h1 {
+	font-family: "Ubuntu";
+	font-size: 100px;
+	padding-top: 10%;
+	color: white;
+}
+@media (max-width: 490px) {
+	h1 {
+		font-family: "Ubuntu";
+		font-size: 60px;
+		padding-top: 10%;
+		color: white;
+	}
+}
+p {
+	font-family: "Ubuntu";
+	font-size: 30px;
+	color: white;
+	margin: 0;
+}
+.sideScroll{
+	overflow: auto;
+	white-space: nowrap;
+}
+.black-text {
+	color: black;
+	font-size: 25px;
+}
+.margin-top {
+	margin-top: 20px;
+}
+.margin-top-large {
+	margin-top: 50px;
+}
+.image_wrap {
+	position: relative;
+	width: 100%;
+	height: auto;
+	padding-bottom: 2px;
+	padding-top: 2px;
+}
+.img_img {
+	width: 100%;
+	height: 100%;
+}
+.img_title_wrap {
+	position: absolute;
+	top: 0;
+  	bottom: 0;
+  	left: 0;
+  	right: 0;
+  	background: rgba(0, 0, 0, 0.6);
+  	color: #fff;
+  	opacity: 1;
+  	display: flex;
+	align-items: center;
+  	justify-content: center;
+
+	transition: opacity .2s, visibility .2s;
+}
+@media (min-width: 985px) {
+	.img_title_wrap {
+		position: absolute;
+		top: 0;
+	  	bottom: 0;
+	  	left: 0;
+	  	right: 0;
+	  	background: rgba(0, 0, 0, 0.6);
+	  	color: #fff;
+	  	opacity: 0;
+	  	display: flex;
+		align-items: center;
+	  	justify-content: center;
+
+		transition: opacity .2s, visibility .2s;
+	}
+}
+.img_title_wrap:hover {
+	opacity: 1;
+}
+.img_title {
+  text-align: center;
+}
+.img_wrap:hover .img_title {
+  transform: translateY(0);
+}
+#border {
+	border-bottom: solid;
+	border-width: thin;
+}
+#music-feature {
+	background-color: black;
+}
+#thankYou {
+	margin-bottom: 15px;
+}
+#contactTopMargin {
+	margin-top: 50px;
+}
+#homeHead {
+	font-family: "Ubuntu";
+	font-size: 30px;
+	color: white;
+	padding-bottom: 30px;
+}
+@media (max-width: 548px){
+	#feature {
+	background-color: #70abaf;
+	margin: 0px;
+	height: 30vh;
+	}
+}
+#musicName {
+	font-family: "Ubuntu";
+	color: black;
+	padding: 20px 0 0 0px;
+	font-size: 20px;
+}
+#musicCategory {
+	color: black;
+	font-family: "Ubuntu";
+	padding-top: 50px;
+	font-size: 50px;
+}
+#jumboDesc {
+	padding-top: 100px;
+	font-family: "Ubuntu";
+	font-size: 30px;
+	color: white;
+}
+/*The header for the about collumn*/
+#about {
+	font-family: "Ubuntu";
+	padding: 50px 0 10px 0;
+	font-size: 30px;
+	color: #005c82;
+}
+/*Styling for the body of the about collumn*/
+#aboutContent {
+	font-family: "Ubuntu";
+	color: black;
+	padding: 20px 10px 0 10px;
+	font-size: 20px;
+}
+#aboutContentBot {
+	font-family: "Ubuntu";
+	color: black;
+	padding: 20px 10px 20px 10px;
+	font-size: 20px;
+}
+#aboutContentWhite {
+	font-family: "Ubuntu";
+	color: white;
+	font-size: 20px;
+}
+/*Styling the links at the collumn*/
+#aboutContentLink {
+	font-family: "Ubuntu";
+	color: black;
+	font-size: 18px;
+}
+#smaller {
+	width: 300px;
+}
+@media (max-width: 548px){
+	#smaller {
+		display: none;
+	}
+}
+/*Title for each post*/
+#blogTitle {
+	color: black;
+	font-family: "Ubuntu";
+	font-size: 30px;
+	padding: 50px 0 0px 0;
+}
+/*The date and such under the title*/
+#blogCap{
+	font-family: "Ubuntu";
+	color: black;
+	font-size: 15px;
+}
+/*The body of the posts*/
+#blogContent {
+	font-family: "Ubuntu";
+	font-size: 20px;
+	color: black;
+}
+/*The lines for the side collumn for every other page*/
+#aboutSide {
+	margin-top: 20px;
+	border-color: black;
+	width: 10%;
+}
+#footerLine {
+	margin-top: 0;
+	border-color: white;
+	width: 100%;
+}
+/*Icon styling*/
+#icons {
+	width: 15px;
+	height: 15px;
+}
+#iconsNav {
+	width: 50px;
+	height: 50px;
+}
+/*Headers for the other pages*/
+#otherPGHead {
+	font-family: "Ubuntu";
+	padding-top: 50px;
+	font-size: 100px;
+	color: black;
+}
+/*Sub head for the other pages*/
+#otherSubHead {
+	font-family: "Ubuntu";
+	font-size: 20px;
+	color: black;
+}
+/*Drop down style*/
+#seeAll {
+	padding: 0 0 50px 0;
+}
+/*links*/
+#navLinks {
+	font-family: "Ubuntu";
+	font-size: 20px;
+	color: black;
+	padding: 0 10px 0 0;
+}
+#navLinksOn {
+	font-family: "Ubuntu";
+	font-size: 20px;
+	color: black;
+	padding: 0 10px 0 0;
+	text-decoration: underline;
+}
+#contactHe {
+	color: white;
+	font-size: 20px;
+}
+#footer {
+	margin: 100px 0 0 0;
+	padding: 20px 0 20px 0;
+	background: #343a40;
+}
+#footerHome {
+	margin: 50px 0 0 0;
+	padding: 20px 0 20px 0;
+	background: #343a40;
+}
+#footerHead {
+	font-size: 30px;
+}
+#footerLinkHead {
+	font-size: 20px;
+	color: white;
+}
+#footerLinks {
+	margin: 0;
+	color: white;
+	font-size: 15px;
+	list-style: none;
+	text-decoration: none;
+}
+#footLink {
+	color: white;
+	transition: all 0.3s ease-in-out;
+}
+#footLink:hover {
+	color: black;
+	text-decoration-style: none;
+	text-decoration: none;
+	transition: all 0.3s ease-in-out;
+}
+#footerIcons {
+	width: 25px;
+	height: 25px;
+}
+#roundBtn {
+	border-radius: 500px;
+	padding: 10px 45px 10px 45px;
+	margin-bottom: 10px;
+}
+#roundBtn2 {
+	font-size: 20px;
+	border-radius: 10px;
+	padding: 10px 45px 10px 45px;
+	margin: 0 0 50px 0;
+}
+#showHide {
+	display: none;
+}
+.white {
+	color: white;
+	border-color: white;
+}
+.noSpace {
+	margin: 0;
+	padding: 0;
+}
+@media only screen and (max-width: 575px) {
+	#showHide {
+		display: block;
+	}
+}
+code {
+	background: #eee;
+}
+hr {
+	margin-top: 50px;
+	border-color: black;
+	width: 25%;
+}
+a {
+	font-family: "Ubuntu";
+	text-decoration: none;
+}
+li {
+	font-family: "Ubuntu";
+}
+audio {
+	width: 420px;
+}

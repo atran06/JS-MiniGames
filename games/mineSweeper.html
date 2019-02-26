@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    	<meta name="viewport" content="width = device-width, initial-scale = 1">
+
+    	<link rel="stylesheet" type="text/css" href="../css/main.css">
+    	<link rel="stylesheet" type="text/css" href="../css/bootstrap.css">
+
+    	<link rel="icon" type="image/png" href="../images/iconTab.png">
+    	<link rel="shortcut icon" type="image/png" href="../images/iconTab.png">
+    	<link rel="shortcut icon" href="../Images/iconTab.png" type="image/png">
+    	<link rel="icon" href="../Images/iconTab.png" type="image/png">
+
+        <title>MineSweeper | Arthur Tran</title>
+
+        <style>
+            @font-face {
+                font-family: "Ub";
+                src: url("../fonts/ubuntu-regular.ttf");
+            }
+            body {
+                text-align: center;
+            }
+            .canvas-container {
+                position: relative;
+                width: 527px;
+                height: 527px;
+                left: 50%;
+                transform: translateX(-50%);
+                margin-top: 20px;
+            }
+            canvas {
+                position: relative;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+            button {
+                display: inline;
+                font-family: "Ub";
+                font-size: 30px;
+                padding: 5px 20px;
+                background: none;
+                border: 1px solid;
+                cursor: pointer;
+                transition: all .5s;
+            }
+            button:hover {
+                background: rgb(200, 200, 200);
+            }
+            button:focus, button:active, button.active, button:focus:active {
+                box-shadow: none;
+                background-image: none;
+                outline: none;
+                -webkit-box-shadow: none;
+            }
+            .hud-container {
+                position: absolute;
+                top: 25%;
+                width: 900px;
+                height: 0;
+                overflow: visible;
+                left: 50%;
+                transform: translateX(-50%);
+                margin-top: 10px;
+                text-align: left;
+            }
+            h2 {
+                font-family: "Ub";
+                font-size: 30px;
+                margin-top: 10px;
+            }
+            .canvas-cover {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                text-align: center;
+                display: none;
+            }
+            .canvas-cover h1 {
+                font-family: "Ub";
+                position: relative;
+                font-size: 80px;
+                color: white;
+                margin: 0;
+                padding: 0;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+        </style>
+    </head>
+    <body onload="init()">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-transparent">
+    			<div class="container">
+    			<a href="../index.html"><img src="../images/icon.png" id="iconsNav"></a>
+    	  		<a class="navbar-brand" href="index.html">&nbsp&nbsp&nbspArthur Tran</a>
+    	  		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    	    		<span class="navbar-toggler-icon"></span>
+    	  		</button>
+
+    	  		<div class="collapse navbar-collapse" id="navbarSupportedContent">
+    	    		<ul class="navbar-nav ml-auto">
+    	      			<li class="nav-item">
+    	        			<a class="nav-link" href="../index.html">Home</a>
+    	      			</li>
+    	      			<li class="nav-item active">
+    	        			<a class="nav-link" href="../games.html">Games</a>
+    	      			</li>
+    	      			<li class="nav-item">
+    	        			<a class="nav-link" href="../articles.html">Articles</a>
+    	      			</li>
+    	      			<li class="nav-item">
+    	        			<a class="nav-link" href="../music.html">Music</a>
+    	      			</li>
+    	      			<li class="nav-item">
+    	        			<a class="nav-link" href="../projects.html">Projects</a>
+    	      			</li>
+    	      			<li class="nav-item">
+    	        			<a class="nav-link" href="../index.html#aboutMe">About Me</a>
+    	      			</li>
+    	      			<li class="nav-item">
+    	        			<a class="nav-link" href="../contact.html">Contact</a>
+    	      			</li>
+    	    		</ul>
+    			</div>
+    		</div>
+    	</nav>
+
+        <h4 id="blogTitle" style="padding-top: 30px;">MineSweeper</h4>
+        <p id="blogCap">
+            <img src="../images/calendar.png" id="icons">&nbsp&nbsp&nbspJuly 16, 2018&nbsp&nbsp&nbsp
+            <img src="../images/code.png" id="icons">&nbsp<img src="../images/pencil.png" id="icons">&nbsp&nbspArthur Tran
+        </p>
+
+        <div class="hud-container">
+            <button type="button" name="button" onclick="restart()">Restart</button>
+            <h2 id="bombs">Bombs: 30</h2>
+        </div>
+        <div class="canvas-container">
+            <canvas oncontextmenu="return false;" id="canvas" width="527" height="527"></canvas>
+            <div class="canvas-cover" id="cover-text">
+                <h1>You Win!</h1>
+            </div>
+        </div>
+    </body>
+
+    <script>
+        var canvas = document.getElementById("canvas");
+        var g = canvas.getContext("2d");
+        var bombC = document.getElementById("bombs");
+        var cover = document.getElementById("cover-text");
+
+        var grid;
+        var mX;
+        var mY;
+
+        var availableBombs = [];
+        var bombs = 30;
+        var died = false;
+
+        function make2DArray() {
+            grid = [];
+            for(var i = 0; i < Math.floor(canvas.width / 35); i++) {
+                grid[i] = new Array(Math.floor(canvas.height / 35));
+            }
+        }
+
+        function init() {
+            make2DArray();
+            for(var x = 0; x < grid.length; x++) {
+                for(var y = 0; y < grid[0].length; y++) {
+                    grid[x][y] = new Cell(x, y, false, 0);
+                    availableBombs.push([x, y]);
+                }
+            }
+
+            chooseBombs();
+            getNumbers();
+            countBombs();
+        }
+
+        canvas.addEventListener('mousedown', function(event) {
+            mX = event.offsetX;
+            mY = event.offsetY;
+
+            console.log(mX + " " + mY);
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            var selected = grid[Math.floor(mX / 35)][Math.floor(mY / 35)]
+
+            if(event.which == 1) {
+                if(selected.bomb == true) {
+                    gameOver();
+                } else {
+                    if(selected.number == 0) {
+                        selected.fillNeighbors();
+                    }
+                    selected.shown = true;
+                }
+            } else if(event.which == 3) {
+                if(selected.flag) {
+                    selected.flag = false;
+                    bombs++;
+                } else {
+                    if(selected.shown == false && bombs > 0) {
+                        selected.flag = true
+                        bombs--;
+                    }
+                }
+                if(selected.shown && selected.solved()) {
+                    selected.reveal();
+                }
+                bombC.innerHTML = "Bombs: " + bombs;
+            }
+        });
+
+        function chooseBombs() {
+            console.log(availableBombs.length);
+            for(var c = 0; c < bombs; c++) {
+                var num = Math.floor(Math.random() * availableBombs.length);
+                grid[availableBombs[num][0]][availableBombs[num][1]].bomb = true;
+                availableBombs.splice(num, 1);
+            }
+        }
+
+        function won() {
+            for(var x = 0; x < grid.length; x++) {
+                for(var y = 0; y < grid[0].length; y++) {
+                    if(!grid[x][y].bomb) {
+                        if(!grid[x][y].shown) {
+                            return false;
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+
+        function gameOver() {
+            for(var x = 0; x < grid.length; x++) {
+                for(var y = 0; y < grid[0].length; y++) {
+                    grid[x][y].shown = true;
+                }
+            }
+            died = true;
+        }
+
+        function getNumbers() {
+            var count = 0;
+
+            for(var x = 0; x < grid.length; x++) {
+                for(var y = 0; y < grid[0].length; y++) {
+                    for(var p = x - 1; p <= x + 1; p++) {
+                        for(var o = y - 1; o <= y + 1; o++) {
+                            if(p > -1 && o > -1 && p < grid.length && o < grid[0].length) {
+                                if(grid[p][o].bomb == true) {
+                                    count++;
+                                }
+                            }
+                        }
+                    }
+                    grid[x][y].number = count;
+                    count = 0;
+                }
+            }
+        }
+
+        function countBombs() {
+            for(var x = 0; x < grid.length; x++) {
+                for(var y = 0; y < grid.length; y++) {
+                    if(grid[x][y].bomb) {
+                        console.log("1");
+                    }
+                }
+            }
+        }
+
+        function restart() {
+            bombs = 30;
+            died = false;
+            availableBombs = [];
+            bombC.innerHTML = "Bombs: " + bombs;
+            cover.style.display= "none";
+            init();
+        }
+
+        function draw() {
+            g.fillStyle = "white";
+            g.fillRect(0, 0, canvas.width, canvas.height);
+
+            for(var x = 0; x < grid.length; x++) {
+                for(var y = 0; y < grid[0].length; y++) {
+                    grid[x][y].draw();
+                }
+            }
+            if(won() && !died && bombs == 0) {
+                cover.style.display= "inline-block";
+            }
+        }
+
+        function gameLoop() {
+            requestAnimationFrame(gameLoop);
+            draw();
+        }
+        requestAnimationFrame(gameLoop);
+
+        class Cell {
+            constructor(x, y, bomb, number) {
+                this.size = 35;
+                this.x = x;
+                this.y = y;
+                this.shown = false;
+                this.bomb = bomb;
+                this.number = number;
+                this.flag = false;
+            }
+
+            draw() {
+                if(this.flag) {
+                    g.fillStyle = "rgb(200, 0, 0)";
+                    g.fillRect(this.x * this.size, this.y * this.size, this.size, this.size);
+                }
+                if(this.shown) {
+                    if(this.bomb) {
+                        g.beginPath();
+                        g.arc((this.x * this.size) + (this.size / 2) + 1, (this.y * this.size) + (this.size / 2) + 1, this.size / 3, 0, 2*Math.PI);
+                        g.fillStyle = "rgb(120, 120, 120)";
+                        g.fill();
+                        g.stroke();
+                    } else {
+                        g.fillStyle = "rgb(200, 200, 200)";
+                        g.fillRect((this.x * this.size) + 1, (this.y * this.size) + 1, this.size, this.size);
+                        g.fillStyle = "black";
+                        g.font = "30px Arial";
+                        if(this.number != 0) {
+                            g.fillText(this.number, (this.x * this.size) + (this.size / 3) - 2, (this.y * this.size) + (this.size - 6));
+                        }
+                        if(this.flag) {
+                            g.beginPath();
+                            g.moveTo(this.x * this.size, this.y * this.size);
+                            g.lineTo((this.x * this.size) + this.size, (this.y * this.size) + this.size);
+                            g.stroke();
+                            g.beginPath();
+                            g.moveTo((this.x * this.size) + this.size, this.y * this.size);
+                            g.lineTo((this.x * this.size), (this.y * this.size) + this.size);
+                            g.stroke();
+                        }
+                    }
+                }
+                g.strokeStyle = "black";
+                g.lineWidth = 2;
+                g.strokeRect((this.x * this.size) + 1, (this.y * this.size) + 1, this.size, this.size);
+            }
+
+            fillNeighbors() {
+                if(this.number == 0) {
+                    for(var p = this.x - 1; p <= this.x + 1; p++) {
+                        for(var o = this.y - 1; o <= this.y + 1; o++) {
+                            if(p > -1 && o > -1 && p < grid.length && o < grid[0].length) {
+                                if(!grid[p][o].shown && !grid[p][o].bee) {
+                                    grid[p][o].shown = true;
+                                    grid[p][o].fillNeighbors();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            reveal() {
+                for(var p = this.x - 1; p <= this.x + 1; p++) {
+                    for(var o = this.y - 1; o <= this.y + 1; o++) {
+                        if(p > -1 && o > -1 && p < grid.length && o < grid[0].length) {
+                            if(!grid[p][o].shown && !grid[p][o].flag) {
+                                if(grid[p][o].bomb) {
+                                    gameOver();
+                                } else {
+                                    grid[p][o].shown = true;
+                                    if(grid[p][o].number == 0) grid[p][o].fillNeighbors();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            solved() {
+                var count = 0;
+
+                for(var p = this.x - 1; p <= this.x + 1; p++) {
+                    for(var o = this.y - 1; o <= this.y + 1; o++) {
+                        if(p > -1 && o > -1 && p < grid.length && o < grid[0].length) {
+                            if(grid[p][o].flag) count++;
+                        }
+                    }
+                }
+                if(count == this.number) {
+                    return true;
+                }
+                return false;
+            }
+        }
+    </script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</html>
