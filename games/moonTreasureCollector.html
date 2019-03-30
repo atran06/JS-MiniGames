@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    	<meta name="viewport" content="width = device-width, initial-scale = 1">
+
+        <link rel="stylesheet" type="text/css" href="../css/main.css">
+    	<link rel="stylesheet" type="text/css" href="../css/bootstrap.css">
+
+    	<link rel="icon" type="image/png" href="../images/iconTab.png">
+    	<link rel="shortcut icon" type="image/png" href="../images/iconTab.png">
+    	<link rel="shortcut icon" href="../Images/iconTab.png" type="image/png">
+    	<link rel="icon" href="../Images/iconTab.png" type="image/png">
+
+        <title> Moon Treasure </title>
+
+        <style>
+            #canvas-container {
+                margin-top: 5%;
+                position: relative;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 1000px;
+                height: 500px;
+            }
+        </style>
+    </head>
+
+    <body onload="init()">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-transparent">
+    			<div class="container">
+    			<a href="../index.html"><img src="../images/icon.png" id="iconsNav"></a>
+    	  		<a class="navbar-brand" href="index.html">&nbsp&nbsp&nbspArthur Tran</a>
+    	  		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    	    		<span class="navbar-toggler-icon"></span>
+    	  		</button>
+
+    	  		<div class="collapse navbar-collapse" id="navbarSupportedContent">
+    	    		<ul class="navbar-nav ml-auto">
+    	      			<li class="nav-item">
+    	        			<a class="nav-link" href="../index.html">Home</a>
+    	      			</li>
+    	      			<li class="nav-item active">
+    	        			<a class="nav-link" href="../games.html">Games</a>
+    	      			</li>
+    	      			<li class="nav-item">
+    	        			<a class="nav-link" href="../articles.html">Articles</a>
+    	      			</li>
+    	      			<li class="nav-item">
+    	        			<a class="nav-link" href="../music.html">Music</a>
+    	      			</li>
+    	      			<li class="nav-item">
+    	        			<a class="nav-link" href="../projects.html">Projects</a>
+    	      			</li>
+    	      			<li class="nav-item">
+    	        			<a class="nav-link" href="../index.html#aboutMe">About Me</a>
+    	      			</li>
+    	      			<li class="nav-item">
+    	        			<a class="nav-link" href="../contact.html">Contact</a>
+    	      			</li>
+    	    		</ul>
+    			</div>
+    		</div>
+    	</nav>
+
+        <div id="canvas-container">
+            <canvas id="canvas" width="1000" height="500"></canvas>
+        </div>
+
+    </body>
+
+    <script>
+        var beforeTime = new Date().getTime();
+
+        var canvas = document.getElementById("canvas");
+        var graphics = canvas.getContext("2d");
+
+        let moon;
+        let astro;
+        let debris;
+
+        function init() {
+            moon = new Moon();
+            astro = new Player();
+
+            debris = new Debris();
+        }
+
+        function render() {
+            graphics.clearRect(0, 0, canvas.width, canvas.height);
+            graphics.fillStyle = "rgb(51, 51, 51)";
+            graphics.fillRect(0, 0, canvas.width, canvas.height);
+
+            moon.draw();
+            astro.draw();
+            debris.draw();
+        }
+
+        function update() {
+            astro.update();
+            debris.update();
+        }
+
+        document.addEventListener('keydown', function(event) {
+            if(astro.canJump) {
+                if(event.keyCode == 32) {
+                    astro.velY = -12;
+                    event.preventDefault();
+                }
+            }
+        });
+
+        requestAnimationFrame(gameLoop);
+
+        function gameLoop(timestamp) {
+            requestAnimationFrame(gameLoop);
+            render();
+            update();
+        }
+
+        class Player {
+            constructor() {
+                this.width = 40;
+                this.height = 60;
+                this.x = (canvas.width / 2) - (this.width / 2);
+                this.y = canvas.height - 130;
+                this.floor = canvas.height - 130;
+
+                this.velX = 0;
+                this.velY = 0;
+
+                this.canJump = false;
+            }
+
+            draw() {
+                /* Rectangle Fill */
+                graphics.fillStyle = "rgb(255, 255, 255)";
+                graphics.fillRect(this.x, this.y, this.width, this.height);
+
+                /* Rectangle Outline */
+                graphics.strokeStyle = "black";
+                graphics.beginPath();
+                graphics.lineWidth = "2";
+                graphics.rect(this.x, this.y, this.width, this.height);
+                graphics.stroke();
+            }
+
+            update() {
+                this.canJump = false;
+
+                this.x += this.velX;
+                this.y += this.velY;
+
+                this.velY += 0.2;
+
+                if(this.y >= this.floor) {
+                    this.y = this.floor;
+                    this.canJump = true;
+                }
+            }
+        }
+
+        class Debris {
+            constructor() {
+                this.orbitCenterX = moon.x;
+                this.orbitCenterY = moon.y;
+                this.orbitRadius = moon.radius + ((Math.random() * 200) + 200);
+                this.orbitSpeed = 200 + (Math.random() * 100);
+                this.distance = 0;
+
+                this.direction = (Math.random() * 2);
+                console.log(this.direction);
+
+                this.radian = (Math.PI /this.orbitSpeed) * this.distance;
+                this.drawX = this.orbitCenterX + this.orbitRadius * Math.cos(this.radian);
+                this.drawY = this.orbitCenterY + this.orbitRadius * Math.sin(this.radian);
+            }
+
+            draw() {
+                graphics.fillStyle = "rgb(255, 255, 255)";
+                graphics.beginPath();
+                graphics.arc(this.drawX, this.drawY, 5, 0, 2*Math.PI);
+                graphics.fill();
+            }
+
+            update() {
+                this.radian = (Math.PI /this.orbitSpeed) * this.distance;
+                this.drawX = this.orbitCenterX + this.orbitRadius * Math.cos(this.radian);
+                this.drawY = this.orbitCenterY + this.orbitRadius * Math.sin(this.radian);
+
+                if(this.direction <= 1) {
+                    this.distance--;
+                } else {
+                    this.distance++;
+                }
+            }
+        }
+
+        class Moon {
+            constructor() {
+                this.x = canvas.width / 2;
+                this.y = (canvas.height - 100) + canvas.width;
+                this.radius = canvas.width;
+            }
+
+            draw() {
+                graphics.fillStyle = "rgb(200, 200, 200)";
+                graphics.beginPath();
+                graphics.arc(this.x, this.y, this.radius, 0, 2*Math.PI);
+                graphics.fill();
+            }
+        }
+
+    </script>
+
+</html>
